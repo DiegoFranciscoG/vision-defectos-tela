@@ -75,6 +75,7 @@ erDiagram
     bool quantized
     float threshold
     varchar threshold_policy
+    float pixel_threshold
     json reference_scores
     varchar weights_license
     varchar status
@@ -90,6 +91,7 @@ erDiagram
   PREDICTIONS {
     bigint id PK
     int model_version_id FK
+    int classifier_version_id FK
     int roll_id FK
     numeric position_m
     char image_sha256
@@ -130,6 +132,7 @@ erDiagram
     varchar inspection_level
     numeric aql
     char code_letter
+    char plan_letter
     int sample_size
     int accept_number
     int reject_number
@@ -145,6 +148,7 @@ erDiagram
     float ks_statistic
     float p_value
     float alert_rate
+    float max_alert_rate
     bool drift_detected
   }
 ```
@@ -184,13 +188,15 @@ erDiagram
 | model_versions | onnx_sha256 | char(64) | **único**; se verifica antes de cargar el modelo | R9 (#30 ML06) |
 | model_versions | quantized | bool | INT8 estático QDQ | #27 |
 | model_versions | threshold, threshold_policy | float, varchar(20) | umbral elegido en **val** (`max_f1_val`, `recall_95_val`, `p99_normal_val`) | R3 (#3, #19) |
-| model_versions | reference_scores | json | puntajes de validación (referencia para el drift) | R8 |
+| model_versions | pixel_threshold | float | umbral de píxel elegido en val (máximo F1 de píxel) para delimitar regiones | R3 |
+| model_versions | reference_scores | json | puntajes de las imágenes **buenas** de validación (referencia del drift) | R8 |
 | model_versions | weights_license | varchar(40) | `CC-BY-NC-SA-4.0` | S6 |
 | model_versions | status | varchar(12) | `candidate`, `production`, `archived`; **solo uno `production` por `name`** (índice único parcial) | — |
 | rolls | code | varchar(30) | único; datos **ficticios** (`RL-2026-0001`) | — |
 | rolls | width_cm | numeric(6,1) | 30–400 (mismo rango que textrack) | Integración textrack |
 | rolls | length_m | numeric(8,2) | > 0 | R6 |
-| predictions | model_version_id | FK → model_versions | no nulo | R11 |
+| predictions | model_version_id | FK → model_versions | detector (PatchCore) que dio el puntaje; no nulo | R11 |
+| predictions | classifier_version_id | FK → model_versions | clasificador que nombró el tipo | R11 |
 | predictions | roll_id, position_m | FK, numeric(8,2) | opcionales; si hay rollo, `0 ≤ position_m ≤ length_m` | R5, R6 |
 | predictions | image_sha256 | char(64) | se guarda el hash, **no la imagen** | R12 (#29, minimización) |
 | predictions | score, threshold, is_defective | float, float, bool | `is_defective = score ≥ threshold`; se copia el umbral usado (auditable) | R3, R11 |
@@ -202,9 +208,9 @@ erDiagram
 | quality_alerts | level | varchar(10) | `WARNING` (≥ 80 % del límite) o `REJECTED` (> límite) | R6 (S3) |
 | quality_alerts | total_points, points_per_100_sq_yd, max_points_allowed | int, numeric(8,2) | ≥ 0 | R5, R6 (#11) |
 | lot_inspections | lot_size / inspection_level / aql | int, varchar, numeric | lote ≥ 2; niveles `S-1…S-4, I, II, III`; AQL 0,10–6,5 | R7 (#12, #13) |
-| lot_inspections | code_letter, sample_size, accept_number, reject_number | char, int | salen de las Tablas I y II-A | R7 (#13) |
+| lot_inspections | code_letter, plan_letter, sample_size, accept_number, reject_number | char, int | letra de la Tabla I, letra del plan tras seguir las flechas y (n, Ac, Re) de la Tabla II-A | R7 (#13) |
 | lot_inspections | decision | varchar(10) | `ACCEPTED` si rollos rechazados ≤ Ac; si no, `REJECTED` | R7 |
-| drift_reports | ks_statistic, p_value, alert_rate | float | KS de dos muestras contra `reference_scores` | R8 (#20) |
+| drift_reports | ks_statistic, p_value, alert_rate, max_alert_rate | float | KS de dos muestras (tela normal) contra `reference_scores` y tasa de alertas frente a su límite | R8 (#20) |
 
 ## Reglas de negocio
 
@@ -217,7 +223,7 @@ erDiagram
 | R5 · Tope por yarda | Máximo 4 puntos por yarda lineal (0,9144 m) al totalizar el rollo. | S2 |
 | R6 · Decisión del rollo | `puntos/100 yd² = puntos × 3600 / (largo_yd × ancho_in)`. Rechazo si supera `MAX_POINTS_PER_100_SQ_YD` (40 por defecto); `WARNING` desde el 80 %. | #10 §1.2, #11, S3 |
 | R7 · Decisión del lote (AQL) | Letra código por Tabla I (nivel II por defecto) → plan (n, Ac, Re) por Tabla II-A siguiendo las flechas. Si n ≥ lote, inspección 100 %. Un rollo rechazado por R6 es una unidad defectuosa. | #12, #13 |
-| R8 · Drift | Cada ventana (por defecto las últimas 200 predicciones, mínimo 30) se compara con `reference_scores` usando KS de dos muestras. Hay drift si `p < 0,01` o si la tasa de alertas se aleja más de 2× de la referencia. | #20, #30 ML01 |
+| R8 · Drift | Ventana por defecto: las últimas 200 predicciones, con un mínimo de 30 de tela normal. Dos señales: (1) **KS de dos muestras** entre los puntajes bajo el umbral (tela que parece normal) y los de las imágenes buenas de validación; hay drift si `p < 0,01`. Así, más defectos reales no se confunden con drift, pero un cambio de cámara, iluminación o tela sí se detecta. (2) **Tasa de alertas** por encima de 25 %, que pide revisión humana. | #20, #30 ML01 |
 | R9 · Integridad del modelo | El ONNX se descarga del release y solo se carga si su SHA-256 coincide con `model_versions.onnx_sha256`. Nunca se deserializan *pickles* no confiables. | #30 ML06, #37 |
 | R10 · Reproducibilidad | Cada experimento registra la semilla, el hash del manifiesto de datos, el commit y las versiones fijadas (`uv.lock`). Las métricas del README salen de `reports/metrics.json`, generado por el pipeline en CPU. | #25 |
 | R11 · Trazabilidad | Cada predicción guarda la versión del modelo, el umbral vigente y la latencia medida. | MVP |
