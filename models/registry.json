@@ -1,0 +1,164 @@
+{
+  "bundle_version": "1.0.0",
+  "release_url": "https://github.com/DiegoFranciscoG/vision-defectos-tela/releases/download/v1.0.0",
+  "weights_license": "CC-BY-NC-SA-4.0",
+  "image_size": 256,
+  "detector": {
+    "name": "patchcore-wide_resnet50_2",
+    "version": "1.0.0",
+    "file": "patchcore.fp32.onnx",
+    "sha256": "3fdb09378b1abd8a8a63a364306d8554ddc31023aa089e2693aae9c9e961a4df",
+    "size_bytes": 111368477,
+    "quantized": false,
+    "threshold": 1.7727890014648438,
+    "threshold_policy": "max_f1_val",
+    "pixel_threshold": 2.2152788639068604,
+    "reference_scores": [
+      1.54285,
+      1.75716,
+      1.56777,
+      1.63434,
+      1.46322,
+      1.56071,
+      1.44276,
+      1.47036,
+      1.47853,
+      1.51005,
+      1.47583,
+      1.42933,
+      1.55188,
+      1.48383,
+      1.45011,
+      1.46399,
+      1.45512,
+      1.48381,
+      1.45329,
+      1.44409,
+      1.44365,
+      1.50363,
+      1.59888,
+      1.47192,
+      1.51078,
+      1.4501,
+      1.50336,
+      1.47142,
+      1.4439,
+      1.49362,
+      1.50934,
+      1.47572,
+      1.43233,
+      1.47473,
+      1.46499,
+      1.56823,
+      1.48216,
+      1.46527,
+      1.45006,
+      1.43522,
+      1.56594,
+      1.51561,
+      1.56372,
+      1.43723,
+      1.49264,
+      1.49401,
+      1.50124,
+      1.48966,
+      1.46935,
+      1.61904,
+      1.45077,
+      1.4868,
+      1.49685,
+      1.55086,
+      1.4468,
+      1.56158,
+      1.48761,
+      1.54433,
+      1.46411,
+      1.62644,
+      1.51014,
+      1.44403
+    ],
+    "class_codes": null,
+    "experiment": {
+      "mlflow_run_id": "23c8d1e3f13643d0840e69d5fd3796f5",
+      "model_type": "patchcore",
+      "backbone": "wide_resnet50_2",
+      "protocol": "stratified",
+      "params": {
+        "coreset_ratio": 0.01,
+        "image_size": 256
+      },
+      "metrics": {
+        "test": {
+          "auprc": 1.0,
+          "auprc_ci95": [
+            1.0,
+            1.0
+          ],
+          "auroc": 1.0,
+          "threshold": 1.7727890014648438,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "false_positive_rate": 0.0,
+          "confusion": [
+            [
+              61,
+              0
+            ],
+            [
+              0,
+              35
+            ]
+          ],
+          "recall_by_class": {
+            "color": 1.0,
+            "cut": 1.0,
+            "hole": 1.0,
+            "metal_contamination": 1.0,
+            "thread": 1.0
+          }
+        },
+        "val_auprc": 1.0
+      },
+      "seed": 42,
+      "data_manifest_sha256": "56ae581e0b7d5801f0d4ec2f7dfa70759807d81491bb643f96ba1e030089be7b",
+      "code_version": "c05c296e3527"
+    }
+  },
+  "classifier": {
+    "name": "defect-classifier-resnet18",
+    "version": "1.0.0",
+    "file": "classifier.int8.onnx",
+    "sha256": "20ef558916a0c9f1239373324093ecd8b2ca33c0d1b2cd70d72a17bf20569765",
+    "size_bytes": 11391782,
+    "quantized": true,
+    "threshold": null,
+    "threshold_policy": null,
+    "pixel_threshold": null,
+    "reference_scores": null,
+    "class_codes": [
+      "good",
+      "color",
+      "cut",
+      "hole",
+      "metal_contamination",
+      "thread"
+    ],
+    "experiment": {
+      "mlflow_run_id": "6a67b6e68b644e20bc3382d2787a6e37",
+      "model_type": "classifier",
+      "backbone": "resnet18",
+      "protocol": "stratified",
+      "params": {
+        "epochs": 12,
+        "image_size": 256
+      },
+      "metrics": {
+        "test_macro_f1": 0.8445645752097365
+      },
+      "seed": 42,
+      "data_manifest_sha256": "56ae581e0b7d5801f0d4ec2f7dfa70759807d81491bb643f96ba1e030089be7b",
+      "code_version": "c05c296e3527"
+    }
+  }
+}

@@ -54,6 +54,8 @@ def _session(path: Path, threads: int) -> ort.InferenceSession:
     options.intra_op_num_threads = threads
     options.inter_op_num_threads = 1
     options.graph_optimization_level = ort.GraphOptimizationLevel.ORT_ENABLE_ALL
+    # No memory arena: lower resident memory on small instances (Render free has 512 MB).
+    options.enable_cpu_mem_arena = False
     return ort.InferenceSession(str(path), options, providers=["CPUExecutionProvider"])
 
 

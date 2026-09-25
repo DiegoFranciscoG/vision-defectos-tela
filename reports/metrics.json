@@ -1,0 +1,545 @@
+{
+  "dataset": {
+    "name": "MVTec AD carpet",
+    "license": "CC-BY-NC-SA-4.0",
+    "manifest_sha256": "56ae581e0b7d5801f0d4ec2f7dfa70759807d81491bb643f96ba1e030089be7b",
+    "splits": {
+      "train": {
+        "color": 8,
+        "cut": 7,
+        "good": 185,
+        "hole": 7,
+        "metal_contamination": 7,
+        "thread": 8
+      },
+      "val": {
+        "color": 4,
+        "cut": 3,
+        "good": 62,
+        "hole": 3,
+        "metal_contamination": 3,
+        "thread": 4
+      },
+      "test": {
+        "color": 7,
+        "cut": 7,
+        "good": 61,
+        "hole": 7,
+        "metal_contamination": 7,
+        "thread": 7
+      }
+    },
+    "leakage_pairs": 0
+  },
+  "protocol": "stratified per image: good 60/20/20, defects 40/20/40 (train/val/test)",
+  "threshold_policy": "max_f1_val",
+  "models": {
+    "classifier_resnet18": {
+      "val_auprc": 0.9536913250148544,
+      "thresholds_val": {
+        "max_f1_val": 0.5399777889251709,
+        "recall_95_val": 0.06504708528518677,
+        "p99_normal_val": 0.6963567733764648
+      },
+      "test": {
+        "auprc": 0.9969280343716435,
+        "auprc_ci95": [
+          0.9889563790428452,
+          1.0
+        ],
+        "auroc": 0.9981264637002342,
+        "threshold": 0.5399777889251709,
+        "precision": 0.9714285714285714,
+        "recall": 0.9714285714285714,
+        "f1": 0.9714285714285714,
+        "false_positive_rate": 0.01639344262295082,
+        "confusion": [
+          [
+            60,
+            1
+          ],
+          [
+            1,
+            34
+          ]
+        ],
+        "recall_by_class": {
+          "color": 1.0,
+          "cut": 1.0,
+          "hole": 1.0,
+          "metal_contamination": 1.0,
+          "thread": 0.8571428571428571
+        }
+      },
+      "test_multiclass": {
+        "per_class": {
+          "good": {
+            "precision": 0.967741935483871,
+            "recall": 0.9836065573770492,
+            "f1": 0.975609756097561,
+            "support": 61
+          },
+          "color": {
+            "precision": 0.875,
+            "recall": 1.0,
+            "f1": 0.9333333333333333,
+            "support": 7
+          },
+          "cut": {
+            "precision": 0.8333333333333334,
+            "recall": 0.7142857142857143,
+            "f1": 0.7692307692307693,
+            "support": 7
+          },
+          "hole": {
+            "precision": 0.8,
+            "recall": 0.5714285714285714,
+            "f1": 0.6666666666666666,
+            "support": 7
+          },
+          "metal_contamination": {
+            "precision": 0.875,
+            "recall": 1.0,
+            "f1": 0.9333333333333333,
+            "support": 7
+          },
+          "thread": {
+            "precision": 0.7142857142857143,
+            "recall": 0.7142857142857143,
+            "f1": 0.7142857142857143,
+            "support": 7
+          }
+        },
+        "macro_f1": 0.8320765954912296,
+        "confusion": [
+          [
+            60,
+            0,
+            0,
+            0,
+            1,
+            0
+          ],
+          [
+            0,
+            7,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            5,
+            1,
+            0,
+            1
+          ],
+          [
+            0,
+            1,
+            1,
+            4,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            7,
+            0
+          ],
+          [
+            2,
+            0,
+            0,
+            0,
+            0,
+            5
+          ]
+        ],
+        "labels": [
+          "good",
+          "color",
+          "cut",
+          "hole",
+          "metal_contamination",
+          "thread"
+        ]
+      },
+      "history": [
+        {
+          "epoch": 1,
+          "train_loss": 1.8829214427922223,
+          "val_loss": 1.2270028591156006,
+          "val_auprc": 0.2650187494801385
+        },
+        {
+          "epoch": 2,
+          "train_loss": 1.2247631984788019,
+          "val_loss": 0.7588586211204529,
+          "val_auprc": 0.6395341758344855
+        },
+        {
+          "epoch": 3,
+          "train_loss": 0.7502433574414468,
+          "val_loss": 0.5395122766494751,
+          "val_auprc": 0.864025562411628
+        },
+        {
+          "epoch": 4,
+          "train_loss": 0.5543688251091553,
+          "val_loss": 0.487652987241745,
+          "val_auprc": 0.9224877450980393
+        },
+        {
+          "epoch": 5,
+          "train_loss": 0.3566453314579285,
+          "val_loss": 0.5038576126098633,
+          "val_auprc": 0.9200845165652469
+        },
+        {
+          "epoch": 6,
+          "train_loss": 0.3454121013616656,
+          "val_loss": 0.448699414730072,
+          "val_auprc": 0.9150701522294062
+        },
+        {
+          "epoch": 7,
+          "train_loss": 0.22830833561785585,
+          "val_loss": 0.28180980682373047,
+          "val_auprc": 0.9328398367019444
+        },
+        {
+          "epoch": 8,
+          "train_loss": 0.19425946205585926,
+          "val_loss": 0.21742241084575653,
+          "val_auprc": 0.9520215981129294
+        },
+        {
+          "epoch": 9,
+          "train_loss": 0.13342143588506425,
+          "val_loss": 0.20567099750041962,
+          "val_auprc": 0.9536913250148544
+        },
+        {
+          "epoch": 10,
+          "train_loss": 0.1019603899336076,
+          "val_loss": 0.23588305711746216,
+          "val_auprc": 0.9521103515533427
+        },
+        {
+          "epoch": 11,
+          "train_loss": 0.07841764457590945,
+          "val_loss": 0.23334339261054993,
+          "val_auprc": 0.9506091553077531
+        },
+        {
+          "epoch": 12,
+          "train_loss": 0.13503916642150363,
+          "val_loss": 0.23421116173267365,
+          "val_auprc": 0.9401384083044984
+        }
+      ]
+    },
+    "patchcore_resnet18": {
+      "val_auprc": 0.9853353105948262,
+      "thresholds_val": {
+        "max_f1_val": 1.322704553604126,
+        "recall_95_val": 1.2821073532104492,
+        "p99_normal_val": 1.312099814414978
+      },
+      "pixel_threshold_val": 1.586890459060669,
+      "test": {
+        "auprc": 1.0,
+        "auprc_ci95": [
+          1.0,
+          1.0
+        ],
+        "auroc": 1.0,
+        "threshold": 1.322704553604126,
+        "precision": 0.9722222222222222,
+        "recall": 1.0,
+        "f1": 0.9859154929577465,
+        "false_positive_rate": 0.01639344262295082,
+        "confusion": [
+          [
+            60,
+            1
+          ],
+          [
+            0,
+            35
+          ]
+        ],
+        "recall_by_class": {
+          "color": 1.0,
+          "cut": 1.0,
+          "hole": 1.0,
+          "metal_contamination": 1.0,
+          "thread": 1.0
+        }
+      },
+      "test_pixel_auroc": 0.994634359769326,
+      "memory_bank": [
+        1894,
+        384
+      ],
+      "parameters": 2782784
+    },
+    "patchcore_wide_resnet50_2": {
+      "val_auprc": 1.0,
+      "thresholds_val": {
+        "max_f1_val": 1.7727890014648438,
+        "recall_95_val": 1.7727890014648438,
+        "p99_normal_val": 1.6822381019592285
+      },
+      "pixel_threshold_val": 2.2152786254882812,
+      "test": {
+        "auprc": 1.0,
+        "auprc_ci95": [
+          1.0,
+          1.0
+        ],
+        "auroc": 1.0,
+        "threshold": 1.7727890014648438,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "false_positive_rate": 0.0,
+        "confusion": [
+          [
+            61,
+            0
+          ],
+          [
+            0,
+            35
+          ]
+        ],
+        "recall_by_class": {
+          "color": 1.0,
+          "cut": 1.0,
+          "hole": 1.0,
+          "metal_contamination": 1.0,
+          "thread": 1.0
+        }
+      },
+      "test_pixel_auroc": 0.9952482008163801,
+      "memory_bank": [
+        1894,
+        1536
+      ],
+      "parameters": 24862528
+    }
+  },
+  "selected_backbone": {
+    "backbone": "wide_resnet50_2",
+    "rule": "best val AUPRC; ties within 0.005 go to the model with fewer parameters"
+  },
+  "mvtec_official_protocol": {
+    "backbone": "wide_resnet50_2",
+    "image_auroc": 0.9863563402889245,
+    "image_auprc": 0.9960148081255513,
+    "pixel_auroc": 0.9903013677918981
+  },
+  "serving": {
+    "onnx_parity_max_abs_diff": {
+      "patchcore": 4.0531158447265625e-06,
+      "classifier": 3.814697265625e-05
+    },
+    "patchcore": {
+      "fp32": {
+        "val_auprc": 1.0,
+        "size_mb": 111.37,
+        "latency_ms": {
+          "p50": 347.7,
+          "p95": 403.3
+        }
+      },
+      "int8": {
+        "val_auprc": 0.4722222222222222,
+        "size_mb": 37.23,
+        "latency_ms": {
+          "p50": 237.2,
+          "p95": 348.1
+        }
+      },
+      "served": "fp32",
+      "val_auprc_drop": 0.5277777777777778
+    },
+    "classifier": {
+      "fp32": {
+        "val_auprc": 0.9536913250148544,
+        "size_mb": 44.8,
+        "latency_ms": {
+          "p50": 48.0,
+          "p95": 52.1
+        }
+      },
+      "int8": {
+        "val_auprc": 0.9507747154805979,
+        "size_mb": 11.39,
+        "latency_ms": {
+          "p50": 56.2,
+          "p95": 84.9
+        }
+      },
+      "served": "int8",
+      "val_auprc_drop": 0.0029166095342565423
+    },
+    "served_detector_test": {
+      "auprc": 1.0,
+      "auprc_ci95": [
+        1.0,
+        1.0
+      ],
+      "auroc": 1.0,
+      "threshold": 1.7727890014648438,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "false_positive_rate": 0.0,
+      "confusion": [
+        [
+          61,
+          0
+        ],
+        [
+          0,
+          35
+        ]
+      ],
+      "recall_by_class": {
+        "color": 1.0,
+        "cut": 1.0,
+        "hole": 1.0,
+        "metal_contamination": 1.0,
+        "thread": 1.0
+      }
+    },
+    "served_classifier_test_multiclass": {
+      "per_class": {
+        "good": {
+          "precision": 0.9682539682539683,
+          "recall": 1.0,
+          "f1": 0.9838709677419355,
+          "support": 61
+        },
+        "color": {
+          "precision": 0.875,
+          "recall": 1.0,
+          "f1": 0.9333333333333333,
+          "support": 7
+        },
+        "cut": {
+          "precision": 0.8333333333333334,
+          "recall": 0.7142857142857143,
+          "f1": 0.7692307692307693,
+          "support": 7
+        },
+        "hole": {
+          "precision": 0.8,
+          "recall": 0.5714285714285714,
+          "f1": 0.6666666666666666,
+          "support": 7
+        },
+        "metal_contamination": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 7
+        },
+        "thread": {
+          "precision": 0.7142857142857143,
+          "recall": 0.7142857142857143,
+          "f1": 0.7142857142857143,
+          "support": 7
+        }
+      },
+      "macro_f1": 0.8445645752097365,
+      "confusion": [
+        [
+          61,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          7,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          5,
+          1,
+          0,
+          1
+        ],
+        [
+          0,
+          1,
+          1,
+          4,
+          0,
+          1
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          7,
+          0
+        ],
+        [
+          2,
+          0,
+          0,
+          0,
+          0,
+          5
+        ]
+      ],
+      "labels": [
+        "good",
+        "color",
+        "cut",
+        "hole",
+        "metal_contamination",
+        "thread"
+      ]
+    },
+    "thresholds_val": {
+      "max_f1_val": 1.7727890014648438,
+      "recall_95_val": 1.7727890014648438,
+      "p99_normal_val": 1.6822386980056763
+    },
+    "pixel_threshold_val": 2.2152788639068604
+  },
+  "environment": {
+    "python": "3.12.13",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "processor": "Intel64 Family 6 Model 140 Stepping 1, GenuineIntel",
+    "torch": "2.14.0+cpu",
+    "timm": "1.0.30",
+    "onnxruntime": "1.30.0",
+    "scikit-learn": "1.9.1",
+    "numpy": "2.5.3"
+  },
+  "backbone_weights_license": {
+    "resnet18": "BSD-3-Clause",
+    "wide_resnet50_2": "BSD-3-Clause"
+  },
+  "runtime_minutes": 21.7
+}
