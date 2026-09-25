@@ -60,7 +60,7 @@ class TestSecurity:
     def test_rate_limit_returns_429(
         self, tiny_models: tuple[ModelRegistry, Path], api_database: str
     ) -> None:
-        registry, model_dir = tiny_models
+        _, model_dir = tiny_models
         settings = api_settings(api_database, model_dir, rate_limit_per_minute=3)
         app = create_app(settings, FabricInspector.from_settings(settings))
         with TestClient(app) as limited:
