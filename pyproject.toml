@@ -78,6 +78,7 @@ select = ["E", "W", "F", "I", "B", "UP", "SIM", "N", "S", "C4", "PT", "RUF", "PL
 ignore = [
     "PLR0913", # model/config constructors legitimately take many keyword arguments
     "PLR2004", # thresholds come from standards and are named where they matter
+    "PLR0917", # FastAPI endpoints receive their dependencies as parameters
 ]
 
 [tool.ruff.lint.per-file-ignores]
