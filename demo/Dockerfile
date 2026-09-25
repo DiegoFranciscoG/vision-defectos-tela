@@ -1,12 +1,12 @@
 # Streamlit demo (thin client of the API). Dependencies installed with pinned hashes.
 
-FROM python:3.12.14-slim-trixie AS builder
+FROM python:3.14.7-slim-trixie AS builder
 WORKDIR /build
 COPY demo/requirements.lock ./
 RUN python -m venv /opt/venv \
     && /opt/venv/bin/pip install --no-cache-dir --require-hashes -r requirements.lock
 
-FROM python:3.12.14-slim-trixie AS runtime
+FROM python:3.14.7-slim-trixie AS runtime
 ENV PATH="/opt/venv/bin:$PATH" PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1
 RUN groupadd --system --gid 10001 app \
     && useradd --system --uid 10001 --gid app --home-dir /app --shell /usr/sbin/nologin app
