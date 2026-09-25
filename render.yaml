@@ -1,0 +1,24 @@
+# Render Blueprint: inference API on the free plan (512 MB RAM, sleeps after 15 min idle).
+# Secrets are entered in the Render dashboard when the Blueprint is created (sync: false).
+services:
+  - type: web
+    name: vision-defectos-tela-api
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: DATABASE_URL
+        sync: false # Neon: postgresql+psycopg://USER:PASSWORD@HOST/DB?sslmode=require
+      - key: API_KEYS
+        sync: false
+      - key: FORWARDED_ALLOW_IPS
+        value: "*" # only Render's proxy can reach the container
+      - key: CORS_ALLOWED_ORIGINS
+        value: ""
+      - key: ENABLE_DOCS
+        value: "true"
+      - key: MAX_CONCURRENT_INFERENCES
+        value: "1"
