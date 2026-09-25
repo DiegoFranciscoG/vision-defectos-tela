@@ -3,6 +3,7 @@
 import argparse
 import json
 import logging
+import os
 import sys
 from pathlib import Path
 
@@ -90,9 +91,13 @@ def main(argv: list[str] | None = None) -> None:
         handler=_seed_demo
     )
     serve = commands.add_parser("serve", help="run the inference API")
-    serve.add_argument("--host", default="127.0.0.1")
-    serve.add_argument("--port", type=int, default=8000)
-    serve.add_argument("--forwarded-allow-ips", default="127.0.0.1")
+    serve.add_argument("--host", default=os.environ.get("HOST", "127.0.0.1"))
+    serve.add_argument("--port", type=int, default=int(os.environ.get("PORT", "8000")))
+    serve.add_argument(
+        "--forwarded-allow-ips",
+        default=os.environ.get("FORWARDED_ALLOW_IPS", "127.0.0.1"),
+        help="Proxies trusted for X-Forwarded-For ('*' only behind a managed proxy like Render)",
+    )
     serve.set_defaults(handler=_serve)
 
     args = parser.parse_args(argv)
