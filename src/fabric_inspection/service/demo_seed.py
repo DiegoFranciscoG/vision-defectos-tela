@@ -1,6 +1,6 @@
 """Fictitious demo data: rolls, simulated inspection frames, alerts and lot decisions.
 
-Nothing here is real: roll codes, fabrics and detections are generated with a fixed seed so the
+Nothing here is real: roll codes, fabrics and detections come from a fixed random seed so the
 demo always looks the same. Scores are drawn from the detector's own reference distribution, so
 the monitoring page shows a stable process until real uploads arrive.
 """
