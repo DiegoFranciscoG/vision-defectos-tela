@@ -1,0 +1,69 @@
+### vision-defectos-tela API: example requests (VS Code REST Client / JetBrains HTTP Client)
+# Set the variables below. Never commit a real key.
+@baseUrl = http://localhost:8000
+@apiKey = {{$dotenv DEMO_API_KEY}}
+
+### Health (public)
+GET {{baseUrl}}/health
+
+### Inspect an image (multipart). Optional: roll_code + position_m
+POST {{baseUrl}}/api/v1/predictions?include_heatmap=false
+X-API-Key: {{apiKey}}
+Content-Type: multipart/form-data; boundary=boundary
+
+--boundary
+Content-Disposition: form-data; name="file"; filename="hole.jpg"
+Content-Type: image/jpeg
+
+< ../demo/samples/hole.jpg
+--boundary
+Content-Disposition: form-data; name="roll_code"
+
+RL-2026-0001
+--boundary
+Content-Disposition: form-data; name="position_m"
+
+12.5
+--boundary--
+
+### Latest predictions
+GET {{baseUrl}}/api/v1/predictions?limit=10
+X-API-Key: {{apiKey}}
+
+### Rolls and their four-point grade
+GET {{baseUrl}}/api/v1/rolls
+X-API-Key: {{apiKey}}
+
+### Roll detail + textrack payload
+GET {{baseUrl}}/api/v1/rolls/RL-2026-0006/quality
+X-API-Key: {{apiKey}}
+
+### Grade now and store an alert if needed
+POST {{baseUrl}}/api/v1/rolls/RL-2026-0006/assessments
+X-API-Key: {{apiKey}}
+
+### ISO 2859-1 plan
+GET {{baseUrl}}/api/v1/quality/aql-plan?lot_size=500&aql=2.5&inspection_level=II
+X-API-Key: {{apiKey}}
+
+### Lot acceptance
+POST {{baseUrl}}/api/v1/lots/LT-2026-02/inspections
+X-API-Key: {{apiKey}}
+Content-Type: application/json
+
+{"aql": "2.5", "inspection_level": "II"}
+
+### Drift of the last 200 predictions
+GET {{baseUrl}}/api/v1/monitoring/drift?window=200
+X-API-Key: {{apiKey}}
+
+### Savings estimate
+POST {{baseUrl}}/api/v1/savings/estimate
+X-API-Key: {{apiKey}}
+Content-Type: application/json
+
+{"meters_per_month": 50000, "manual_recall": 0.7}
+
+### Served models (model card)
+GET {{baseUrl}}/api/v1/models/current
+X-API-Key: {{apiKey}}
