@@ -101,8 +101,13 @@ def resolve_model_file(
     logger.info("Downloading %s", url)
     with tempfile.NamedTemporaryFile(dir=cache_dir, delete=False) as tmp:
         tmp_path = Path(tmp.name)
-        with urllib.request.urlopen(url, timeout=60) as response:  # noqa: S310 - https enforced
-            shutil.copyfileobj(response, tmp, _CHUNK)
+        try:
+            with urllib.request.urlopen(url, timeout=60) as response:  # noqa: S310 - https only
+                shutil.copyfileobj(response, tmp, _CHUNK)
+        except OSError as error:  # URLError, timeouts and HTTP errors are OSError subclasses
+            tmp.close()
+            tmp_path.unlink(missing_ok=True)
+            raise ModelIntegrityError(f"Could not download {entry.file}: {error}") from error
     if sha256_file(tmp_path) != entry.sha256:
         tmp_path.unlink(missing_ok=True)
         raise ModelIntegrityError(f"Downloaded {entry.file} does not match the registered SHA-256")
