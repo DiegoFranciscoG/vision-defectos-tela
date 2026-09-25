@@ -11,28 +11,44 @@ class TestDrift:
 
     def test_same_distribution_is_stable(self) -> None:
         window = np.random.default_rng(1).normal(1.0, 0.1, 200).tolist()
-        result = detect_drift(window, self.reference, threshold=1.3)
+        result = detect_drift(window, self.reference, threshold=1.5)
         assert not result.drift_detected
         assert result.reason == "stable"
         assert result.p_value is not None
         assert result.p_value > 0.01
 
-    def test_shifted_distribution_is_detected(self) -> None:
-        window = np.random.default_rng(2).normal(1.4, 0.1, 200).tolist()
-        result = detect_drift(window, self.reference, threshold=1.3)
+    def test_more_real_defects_are_not_drift(self) -> None:
+        normal = np.random.default_rng(3).normal(1.0, 0.1, 180)
+        defects = np.random.default_rng(4).normal(2.5, 0.2, 20)
+        result = detect_drift(
+            np.concatenate([normal, defects]).tolist(), self.reference, threshold=1.5
+        )
+        assert not result.drift_detected
+        assert result.alert_rate == pytest.approx(0.1)
+
+    def test_shift_of_normal_fabric_is_detected(self) -> None:
+        window = np.random.default_rng(2).normal(1.2, 0.1, 200).tolist()
+        result = detect_drift(window, self.reference, threshold=1.5)
         assert result.drift_detected
-        assert "ks_p_value" in result.reason
-        assert "alert_rate_changed" in result.reason
+        assert result.reason == "normal_score_shift"
+
+    def test_too_many_alerts_is_flagged(self) -> None:
+        normal = np.random.default_rng(5).normal(1.0, 0.1, 100)
+        result = detect_drift(
+            np.concatenate([normal, np.full(100, 3.0)]).tolist(), self.reference, threshold=1.5
+        )
+        assert result.drift_detected
+        assert result.reason == "alert_rate_above_limit"
 
     def test_small_window_is_not_evaluated(self) -> None:
-        result = detect_drift([1.0] * 5, self.reference, threshold=1.3)
+        result = detect_drift([1.0] * 5, self.reference, threshold=1.5)
         assert not result.drift_detected
         assert result.reason.startswith("insufficient_data")
         assert result.ks_statistic is None
 
-    def test_reference_needs_two_scores(self) -> None:
+    def test_reference_needs_two_normal_scores(self) -> None:
         with pytest.raises(ValueError, match="at least two"):
-            detect_drift([1.0] * 50, [1.0], threshold=1.0)
+            detect_drift([1.0] * 50, [1.0, 5.0], threshold=2.0)
 
 
 class TestSavings:
