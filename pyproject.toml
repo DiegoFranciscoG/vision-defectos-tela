@@ -1,0 +1,130 @@
+[project]
+name = "fabric-inspection"
+version = "1.0.0"
+description = "Fabric defect detection with PatchCore and a supervised baseline, ONNX Runtime inference API and ASTM D5430 / ISO 2859-1 quality decisions."
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "Diego Francisco Granda Zhingre" }]
+requires-python = ">=3.12,<3.13"
+# Serving core: what the inference API needs (no PyTorch).
+dependencies = [
+    "alembic==1.20.0",
+    "fastapi==0.141.1",
+    "numpy==2.5.3",
+    "onnxruntime==1.30.0",
+    "pillow==12.3.0",
+    "psycopg[binary]==3.3.6",
+    "pydantic==2.13.5",
+    "pydantic-settings==2.15.0",
+    "python-multipart==0.0.32",
+    "scipy==1.18.1",
+    "sqlalchemy==2.1.0",
+    "uvicorn==0.53.0",
+]
+
+[project.optional-dependencies]
+# Offline pipeline: training, evaluation, export and experiment tracking.
+train = [
+    "matplotlib==3.11.2",
+    "mlflow==3.16.1",
+    "onnx==1.23.0",
+    "onnxscript==0.7.2",
+    "scikit-learn==1.9.1",
+    "timm==1.0.30",
+    "torch==2.14.0",
+    "torchvision==0.29.0",
+]
+# Streamlit demo (thin client of the API).
+demo = [
+    "httpx==0.28.1",
+    "streamlit==1.64.0",
+]
+
+[project.scripts]
+fabric-inspection = "fabric_inspection.cli:main"
+
+[dependency-groups]
+dev = [
+    "httpx==0.28.1",
+    "mypy==2.3.1",
+    "pre-commit==4.6.2",
+    "pytest==9.1.1",
+    "pytest-cov==7.1.0",
+    "ruff==0.16.9",
+]
+
+[build-system]
+requires = ["uv_build>=0.11.14,<0.12"]
+build-backend = "uv_build"
+
+# CPU-only PyTorch wheels (smaller, deterministic reference platform).
+[tool.uv.sources]
+torch = [{ index = "pytorch-cpu" }]
+torchvision = [{ index = "pytorch-cpu" }]
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "I", "B", "UP", "SIM", "N", "S", "C4", "PT", "RUF", "PL", "TID"]
+ignore = [
+    "PLR0913", # model/config constructors legitimately take many keyword arguments
+    "PLR2004", # thresholds come from standards and are named where they matter
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S101", "PLR2004", "S311", "PLR0917"]
+"demo/**" = ["S101"]
+
+[tool.ruff.lint.flake8-tidy-imports]
+ban-relative-imports = "all"
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+warn_unreachable = true
+mypy_path = "src"
+packages = ["fabric_inspection"]
+plugins = ["pydantic.mypy"]
+
+[[tool.mypy.overrides]]
+module = [
+    "timm.*",
+    "torchvision.*",
+    "mlflow.*",
+    "sklearn.*",
+    "scipy.*",
+    "onnxruntime.*",
+    "onnx.*",
+    "matplotlib.*",
+]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra --strict-markers"
+markers = [
+    "slow: builds tiny models and exports ONNX (seconds, not minutes)",
+]
+filterwarnings = ["error::pytest.PytestUnraisableExceptionWarning"]
+
+[tool.coverage.run]
+source = ["fabric_inspection"]
+branch = true
+
+[tool.coverage.report]
+fail_under = 70
+show_missing = true
+skip_covered = true
+exclude_also = [
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+]
