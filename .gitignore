@@ -1,0 +1,49 @@
+# ---- Secretos y entorno
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+*.keystore
+.streamlit/secrets.toml
+
+# ---- Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+.ipynb_checkpoints/
+
+# ---- Datos y artefactos pesados (se descargan o regeneran; ver README)
+data/raw/
+data/processed/
+data/*.db
+data/*.db-journal
+models/*.onnx
+models/*.onnx.data
+models/checkpoints/
+.cache/
+mlruns/
+mlartifacts/
+mlflow.db
+*.sqlite3
+
+# ---- IDE / SO
+.idea/
+.vscode/*
+!.vscode/extensions.json
+.DS_Store
+Thumbs.db
