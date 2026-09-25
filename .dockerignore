@@ -16,6 +16,5 @@ reports
 notebooks
 tests
 docs
-models/*.fp32.onnx
-models/*.pre.onnx
+models/*.onnx
 .streamlit/secrets.toml

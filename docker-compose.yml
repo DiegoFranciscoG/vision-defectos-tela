@@ -19,6 +19,7 @@ services:
     restart: unless-stopped
 
   api:
+    image: vision-defectos-tela-api:1.0.0
     build:
       context: .
       dockerfile: Dockerfile
@@ -33,6 +34,9 @@ services:
     ports:
       - "127.0.0.1:8000:8000"
     volumes:
+      # ONNX files from `fabric-inspection reproduce`; if absent they are downloaded from the
+      # GitHub Release into the cache volume (verified by SHA-256).
+      - ./models:/app/models:ro
       - model-cache:/app/.cache/models
     depends_on:
       db:
@@ -40,6 +44,7 @@ services:
     restart: unless-stopped
 
   demo:
+    image: vision-defectos-tela-demo:1.0.0
     build:
       context: .
       dockerfile: demo/Dockerfile

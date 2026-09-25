@@ -28,10 +28,10 @@ RUN groupadd --system --gid 10001 app \
     && useradd --system --uid 10001 --gid app --home-dir /app --shell /usr/sbin/nologin app
 WORKDIR /app
 COPY --from=builder /opt/venv /opt/venv
-# registry.json is versioned; ONNX files are copied only if they exist locally (after
-# `fabric-inspection reproduce`). Otherwise they are downloaded from the GitHub Release on start
-# and verified against their SHA-256.
-COPY models/ ./models/
+# Only the registry goes into the image. The ONNX files come from a read-only mount (local
+# `docker compose`) or are downloaded from the GitHub Release on start, and are loaded only if
+# their SHA-256 matches the registry.
+COPY models/registry.json ./models/registry.json
 RUN mkdir -p /app/.cache/models /app/data && chown -R app:app /app/.cache /app/data
 USER app
 EXPOSE 8000
