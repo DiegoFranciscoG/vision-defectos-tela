@@ -243,4 +243,4 @@ El entrenamiento no se despliega: se reproduce en local o en Kaggle/Colab.
 - **Normas:** ASTM D5430-26 (4 puntos), ISO 2859-1:2026 (AQL) y MIL-STD-105E (dominio público, origen de las tablas). Las 38 fuentes y los 14 supuestos están en [docs/investigacion.md](docs/investigacion.md).
 
 ## Autor
-**Diego Francisco Granda Zhingre** · [GitHub](https://github.com/DiegoFranciscoG)
+**Diego Francisco Granda Zhingre** · [GitHub](https://github.com/DiegoFranciscoG) · [LinkedIn](https://www.linkedin.com/in/diego-francisco-g-61b793254/) · [Portafolio](https://diegofranciscog.github.io/)
