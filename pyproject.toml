@@ -20,7 +20,7 @@ dependencies = [
     "python-multipart==0.0.32",
     "scipy==1.18.1",
     "sqlalchemy==2.1.0",
-    "uvicorn==0.53.0",
+    "uvicorn==0.54.0",
 ]
 
 [project.optional-dependencies]
