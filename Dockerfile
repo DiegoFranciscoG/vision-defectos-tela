@@ -1,7 +1,7 @@
 # Inference API: FastAPI + ONNX Runtime on CPU. No PyTorch in this image.
 # Multi-stage, pinned versions, non-root user and health check.
 
-FROM ghcr.io/astral-sh/uv:0.12.19 AS uv
+FROM ghcr.io/astral-sh/uv:0.12.22 AS uv
 
 FROM python:3.12.14-slim-trixie AS builder
 COPY --from=uv /uv /usr/local/bin/uv
