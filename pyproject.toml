@@ -28,12 +28,12 @@ dependencies = [
 train = [
     "matplotlib==3.11.2",
     "mlflow==3.16.1",
-    "onnx==1.23.0",
+    "onnx==1.23.2",
     "onnxscript==0.7.2",
     "scikit-learn==1.9.1",
     "timm==1.0.30",
     "torch==2.14.0",
-    "torchvision==0.29.0",
+    "torchvision==0.29.1",
 ]
 # Streamlit demo (thin client of the API).
 demo = [
