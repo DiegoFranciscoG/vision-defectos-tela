@@ -10,7 +10,7 @@ requires-python = ">=3.12,<3.13"
 # Serving core: what the inference API needs (no PyTorch).
 dependencies = [
     "alembic==1.20.0",
-    "fastapi==0.141.1",
+    "fastapi==0.142.2",
     "numpy==2.5.3",
     "onnxruntime==1.30.0",
     "pillow==12.3.0",
